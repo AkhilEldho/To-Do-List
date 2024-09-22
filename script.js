@@ -1,42 +1,59 @@
-const inputBox = document.getElementById("input-box")
-const listContainer = document.getElementById("list-container")
+const inputBox = document.getElementById("input-box");
+const listContainer = document.getElementById("list-container");
 
-function addTask(){
-    if(inputBox.value === ''){
-        alert("Enter something as a to do");
-    }
-    else{
+function addTask() {
+    if (inputBox.value === '') {
+        alert("Please enter a task!");
+    } else {
         let li = document.createElement("li");
         li.innerHTML = inputBox.value;
-        listContainer.appendChild(li);
-
+        
         let span = document.createElement("span");
-        span.innerHTML = "\u00d7";
-
+        span.innerHTML = "×";
         li.appendChild(span);
-    }
 
-    inputBox.value = ""
-    saveData();
+        // Add event listener for checking off task
+        li.addEventListener("click", () => {
+            li.classList.toggle("checked");
+            saveData();
+        });
+
+        // Add event listener for removing task
+        span.addEventListener("click", (e) => {
+            e.stopPropagation(); // Prevents triggering the li click event
+            li.remove();
+            saveData();
+        });
+
+        listContainer.appendChild(li);
+        inputBox.value = ""; // Clear the input box
+        saveData(); // Save data to local storage
+    }
 }
 
-listContainer.addEventListener("click", function(e){
-    if(e.target.tagName === "LI"){
-        e.target.classList.toggle("checked");
-        saveData();
-    }
-    else if(e.target.tagName === "SPAN"){
-        e.target.parentElement.remove();
-        saveData();
-    }
-}, false);
-
-function saveData(){
+function saveData() {
     localStorage.setItem("data", listContainer.innerHTML);
 }
 
-function getData(){
-    listContainer.innerHTML = localStorage.getItem("data");
+function getData() {
+    listContainer.innerHTML = localStorage.getItem("data") || ''; // Ensure it doesn't throw an error
+    const items = listContainer.querySelectorAll("li");
+    items.forEach(item => {
+        // Re-attach event listeners for existing items
+        item.addEventListener("click", () => {
+            item.classList.toggle("checked");
+            saveData();
+        });
+        
+        const span = item.querySelector("span");
+        if (span) {
+            span.addEventListener("click", (e) => {
+                e.stopPropagation();
+                item.remove();
+                saveData();
+            });
+        }
+    });
 }
 
-getData();
+document.addEventListener("DOMContentLoaded", getData);
