@@ -38,6 +38,7 @@ task-manager-app/
 1. **Add a Task**:
    - Type your task in the input field.
    - Click the "Add Task" button.
+   - 
    ![Adding a Task](https://github.com/AkhilEldho/To-Do-List/blob/main/images/Screenshot%202024-09-22%20152605.png)
 
 2. **Complete a Task**:
